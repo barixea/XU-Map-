@@ -74,6 +74,15 @@ export const BUILDINGS: Building[] = [
     description: 'University museum of Northern Mindanao cultural heritage.',
     offices: [{ name: 'Museum Curator' }],
   },
+  {
+    id: 'faber-hall',
+    name: 'Faber Hall',
+    aliases: [' College of Computer Studies','CS', ],
+    category: 'academic',
+    coordinates: [124.6462, 8.4759],
+    description: 'University museum of Northern Mindanao cultural heritage.',
+    offices: [{ name: 'Museum Curator' }],
+  },
 ];
 
 export const BUILDING_IDS = new Set(BUILDINGS.map((b) => b.id));

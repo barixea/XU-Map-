@@ -15,6 +15,7 @@ import Map, {
 import BuildingMarker from './BuildingMarker';
 import BuildingSearch from './BuildingSearch';
 import BuildingSheet from './BuildingSheet';
+import CampusBoundary from './CampusBoundary';
 import ViewModeToggle from './ViewModeToggle';
 import {
   CAMPUS_BOUNDS,
@@ -142,6 +143,8 @@ export default function CampusMap({ buildings }: { buildings: BuildingWithPhoto[
           fitBoundsOptions={{ maxZoom: 18 }}
         />
         <ScaleControl position="bottom-right" unit="metric" maxWidth={90} />
+
+        <CampusBoundary />
 
         {buildings.map((building) => (
           <BuildingMarker
