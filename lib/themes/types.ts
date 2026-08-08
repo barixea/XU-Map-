@@ -52,7 +52,7 @@ export interface Theme {
    * below its text.
    */
   accent?: {
-    /** Path under `public/`, e.g. `/themes/spiderman/web.svg`. */
+    /** Path under `public/`, e.g. `/themes/intramurals/bunting.svg`. */
     image?: string;
     /** Extra classes on the overlay, e.g. opacity or background-size. */
     className?: string;

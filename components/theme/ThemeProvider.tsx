@@ -41,7 +41,16 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
   useEffect(() => {
     try {
       const stored = window.localStorage.getItem(THEME_STORAGE_KEY);
-      if (stored) setThemeIdState(getTheme(stored).id);
+      if (!stored) return;
+
+      const resolved = getTheme(stored).id;
+      setThemeIdState(resolved);
+
+      // A retired theme leaves its id behind in every browser that chose it.
+      // `getTheme` already falls back, so nothing looks wrong — but the dead id
+      // would sit there indefinitely and spring back to life if the id were
+      // ever reused. Rewriting it here lets storage heal on the next load.
+      if (resolved !== stored) window.localStorage.setItem(THEME_STORAGE_KEY, resolved);
     } catch {
       // Private mode or storage disabled — stay on the default.
     }

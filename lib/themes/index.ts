@@ -1,5 +1,5 @@
 import type { Theme } from './types';
-import { spiderman } from './spiderman';
+import { red } from './red';
 import { xuBlue } from './xu-blue';
 
 export type { Theme, LightPreset } from './types';
@@ -8,11 +8,11 @@ export type { Theme, LightPreset } from './types';
  * Every theme the picker offers, in display order.
  *
  * ── Adding an event theme ────────────────────────────────────────────────
- *   1. Copy `spiderman.ts` to e.g. `intramurals.ts` and change the values.
+ *   1. Copy `red.ts` to e.g. `intramurals.ts` and change the values.
  *   2. Import it here and add it to the array below.
  * That is the whole job — no CSS, Tailwind, or component changes.
  */
-export const THEMES: Theme[] = [xuBlue, spiderman];
+export const THEMES: Theme[] = [xuBlue, red];
 
 /** The look a first-time visitor gets, and the fallback for an unknown id. */
 export const DEFAULT_THEME_ID = xuBlue.id;

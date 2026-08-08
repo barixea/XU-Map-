@@ -23,7 +23,15 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    /*
+      `suppressHydrationWarning` covers the `data-theme` attribute that the
+      pre-paint script in <head> sets from localStorage. The server cannot know
+      the visitor's choice, so it renders no attribute and the client finds one
+      — a mismatch React reports as an error. It is scoped to this element's own
+      attributes and does not extend to any descendant, so a genuine mismatch
+      inside the app is still reported.
+    */
+    <html lang="en" suppressHydrationWarning>
       <head>
         {/* Color variables for every theme; `data-theme` picks which block wins. */}
         <style dangerouslySetInnerHTML={{ __html: themeStyleSheet() }} />
