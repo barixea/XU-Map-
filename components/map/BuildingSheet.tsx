@@ -53,18 +53,19 @@ export default function BuildingSheet({
 
         <div>
           <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-            Offices inside
+            Rooms and offices
           </h3>
-          <ul className="mt-2 divide-y divide-slate-100">
-            {building.offices.map((office) => (
-              <li key={office.name} className="py-2">
-                <p className="text-sm font-medium text-slate-800">{office.name}</p>
-                <p className="text-xs text-slate-500">
-                  {[office.floor, office.hours].filter(Boolean).join(' · ') || '—'}
-                </p>
-              </li>
-            ))}
-          </ul>
+          {building.rooms.length > 0 ? (
+            <ul className="mt-2 divide-y divide-slate-100">
+              {building.rooms.map((room) => (
+                <li key={room} className="py-2 text-sm text-slate-800">
+                  {room}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="mt-2 text-sm text-slate-500">Not listed yet.</p>
+          )}
         </div>
       </div>
     </aside>

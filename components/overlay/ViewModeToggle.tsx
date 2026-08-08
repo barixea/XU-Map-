@@ -1,5 +1,9 @@
 'use client';
 
+/**
+ * 2D / 3D switch. Stacked vertically so it reads as one column with the zoom
+ * and locate buttons beneath it in ControlDock.
+ */
 export default function ViewModeToggle({
   mode,
   onChange,
@@ -11,7 +15,7 @@ export default function ViewModeToggle({
     <div
       role="group"
       aria-label="Map view mode"
-      className="absolute left-4 top-4 z-10 flex rounded-lg bg-white/95 p-1 shadow-md ring-1 ring-black/5 backdrop-blur"
+      className="flex flex-col overflow-hidden rounded-lg bg-white shadow-md ring-1 ring-black/10"
     >
       {(['2d', '3d'] as const).map((option) => (
         <button
@@ -19,8 +23,8 @@ export default function ViewModeToggle({
           type="button"
           onClick={() => onChange(option)}
           aria-pressed={mode === option}
-          className={`rounded-md px-3 py-1.5 text-sm font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900 ${
-            mode === option ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100'
+          className={`size-10 text-sm font-bold transition focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand ${
+            mode === option ? 'bg-brand text-white' : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
           {option.toUpperCase()}
