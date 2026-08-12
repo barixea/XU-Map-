@@ -1,21 +1,10 @@
 import { DEFAULT_THEME_ID, THEMES } from './index';
 import type { Theme } from './types';
 
-/**
- * Compiles every theme into CSS custom properties, one block per theme.
- *
- * Emitted as a real stylesheet — rather than set from JavaScript — so that a
- * returning visitor's theme is already painted on the first frame. The
- * pre-paint script in `init-script.ts` only has to flip an attribute; it never
- * needs to know a single color.
- */
+// Compiles themes to CSS for instant loading (not set from JavaScript).
 
-/**
- * Hex to space-separated RGB channels: '#293871' → '41 56 113'.
- *
- * Tailwind's `<alpha-value>` placeholder needs the channels bare, not wrapped
- * in `rgb()`, so that `bg-brand/50` can compose into `rgb(41 56 113 / 0.5)`.
- */
+// Convert hex to RGB channels for Tailwind alpha value syntax.
+// '#293871' → '41 56 113' so bg-brand/50 works as rgb(41 56 113 / 0.5)
 function toChannels(hex: string): string {
   const raw = hex.trim().replace(/^#/, '');
   const full =
@@ -27,8 +16,7 @@ function toChannels(hex: string): string {
       : raw;
 
   if (!/^[0-9a-fA-F]{6}$/.test(full)) {
-    // Thrown during the layout render, so `next build` fails loudly on a typo
-    // instead of shipping a theme with a silently broken color.
+    // Fail loudly at build time instead of shipping broken colors
     throw new Error(`Invalid theme color "${hex}" — expected #rgb or #rrggbb.`);
   }
 
@@ -46,7 +34,7 @@ function variables(theme: Theme): string {
   ].join(';');
 }
 
-/** Ids reach a CSS selector and an HTML attribute, so keep them boring. */
+// IDs used in CSS selectors and HTML attributes must be safe and simple
 function assertSafeId(id: string): string {
   if (!/^[a-z0-9-]+$/.test(id)) {
     throw new Error(`Invalid theme id "${id}" — use lowercase letters, digits, and dashes.`);

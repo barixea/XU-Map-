@@ -3,10 +3,10 @@
 import dynamic from 'next/dynamic';
 import type { BuildingWithPhoto } from '@/lib/types';
 
-/** Fills the same space the map will, so nothing jumps when it swaps in. */
+// Placeholder while Mapbox loads (no SSR since mapbox-gl touches window)
 const LOADING_SCREEN = 'grid h-[100dvh] w-full place-items-center bg-slate-100';
 
-// mapbox-gl touches `window` at import time, so keep it out of the server render.
+// mapbox-gl reads window at import, so skip server-side rendering
 const CampusMap = dynamic(() => import('./CampusMap'), {
   ssr: false,
   loading: () => (

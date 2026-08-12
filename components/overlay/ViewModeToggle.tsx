@@ -1,24 +1,21 @@
 'use client';
 
-/** Matches the zoom and locate cards below it so the column reads as one unit. */
+// 2D/3D view mode toggle matching the style of other map controls
 const TOGGLE_GROUP = 'flex flex-col overflow-hidden rounded-lg bg-white shadow-md ring-1 ring-black/10';
 
-/** Shared by both options; the fill and text color come from the two below. */
+// Base button styling for both modes
 const OPTION = [
   'size-10 text-sm font-bold transition',
   'focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand',
 ].join(' ');
 
-/** The current mode, filled with the active theme's brand color. */
+// Active mode styling
 const OPTION_ACTIVE = 'bg-brand text-white';
 
-/** The other mode — quiet until pointed at. */
+// Inactive mode styling (hover for feedback)
 const OPTION_IDLE = 'text-slate-600 hover:bg-slate-100';
 
-/**
- * 2D / 3D switch. Stacked vertically so it reads as one column with the zoom
- * and locate buttons beneath it in ControlDock.
- */
+// 2D/3D toggle — one active, one dormant
 export default function ViewModeToggle({
   mode,
   onChange,
@@ -33,8 +30,7 @@ export default function ViewModeToggle({
           key={option}
           type="button"
           onClick={() => onChange(option)}
-          // aria-pressed rather than aria-current: these are two toggles in a
-          // group, and only one is on at a time.
+          // aria-pressed (toggle state) rather than aria-current
           aria-pressed={mode === option}
           className={`${OPTION} ${mode === option ? OPTION_ACTIVE : OPTION_IDLE}`}
         >

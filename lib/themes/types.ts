@@ -1,47 +1,26 @@
-/**
- * Shape of a campus map theme.
- *
- * A theme is the single source of truth for one look: the CSS custom properties
- * that drive every Tailwind `brand` utility, and the raw colors Mapbox needs at
- * runtime for the campus boundary and lighting.
- *
- * To add a theme, copy an existing file in this folder, change the values, and
- * register it in `index.ts`. Nothing else needs to change.
- */
+// Theme shape: CSS colors for Tailwind + raw colors for Mapbox.
+// To add: copy an existing theme file, change values, register in index.ts.
 
-/** Mapbox Standard's built-in lighting presets. */
+// Mapbox Standard's built-in lighting presets
 export type LightPreset = 'dawn' | 'day' | 'dusk' | 'night';
 
 export interface Theme {
-  /** Stable id — persisted to localStorage and used as the `data-theme` value. */
-  id: string;
-  /** Name shown in the picker. */
-  label: string;
-  /** One line under the label in the picker. */
-  tagline: string;
-  /** Two hexes for the picker's swatch chip — usually brand + a map accent. */
-  swatch: [string, string];
+  id: string; // Saved to localStorage
+  label: string; // Shown in the theme picker
+  tagline: string; // Description under the label
+  swatch: [string, string]; // Two colors shown in the picker chip
 
-  /** Hex colors compiled into CSS custom properties. */
   colors: {
-    /** Top bar, active controls, primary buttons. */
-    brand: string;
-    /** Hover/pressed state of anything `brand`. */
-    brandDark: string;
-    /** Lighter fill, currently unused by components but available as `bg-brand-light`. */
-    brandLight: string;
-    /** Text and icons drawn on top of `brand` — pick for contrast, not for looks. */
-    onBrand: string;
+    brand: string; // Primary color
+    brandDark: string; // Hover/active state
+    brandLight: string; // Light fill variant
+    onBrand: string; // Contrast text on brand backgrounds
   };
 
-  /** Values handed to Mapbox at runtime; these cannot be Tailwind classes. */
   map: {
-    /** Campus interior tint. */
-    boundaryFill: string;
-    /** Campus perimeter stroke. */
-    boundaryLine: string;
-    /** Wider stroke drawn under the perimeter to keep it legible on busy tiles. */
-    boundaryCasing: string;
+    boundaryFill: string; // Campus interior tint
+    boundaryLine: string; // Campus perimeter stroke
+    boundaryCasing: string; // Outline for readability
     lightPreset2D: LightPreset;
     lightPreset3D: LightPreset;
   };

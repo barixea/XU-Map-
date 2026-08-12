@@ -5,49 +5,35 @@ import { useEffect, useRef, useState } from 'react';
 import { useTheme } from '@/components/theme/ThemeProvider';
 import { THEMES } from '@/lib/themes';
 
-/**
- * Sits on the brand fill, so hover is a white wash at 15% rather than a grey
- * tint — it has to work over whatever color the active theme paints the bar.
- */
+// Styled button to open the theme menu
 const TRIGGER = [
   'grid size-9 place-items-center rounded-lg text-brand-fg',
   'transition hover:bg-white/15',
   'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white',
 ].join(' ');
 
-/**
- * `z-40` clears the top bar and the search results below it. `right-0` hangs
- * the menu leftward from the trigger so it never runs off the screen edge.
- */
+// Dropdown menu positioning
 const MENU = [
   'absolute right-0 top-full z-40 mt-2 w-60',
   'overflow-hidden rounded-xl bg-white py-1 shadow-xl ring-1 ring-black/10',
 ].join(' ');
 
-/** Swatch, name and tagline, then the tick — one row, full width. */
+// One menu row per theme
 const MENU_ITEM = [
   'flex w-full items-center gap-3 px-3 py-2.5 text-left',
   'transition hover:bg-slate-50 focus:bg-slate-50 focus:outline-none',
 ].join(' ');
 
-/**
- * Two-tone chip: the two halves are `w-1/2` children, and `overflow-hidden`
- * against `rounded-full` is what crops the pair into a circle.
- */
+// Two-color preview chip for each theme
 const SWATCH = 'flex size-7 shrink-0 overflow-hidden rounded-full ring-1 ring-black/10';
 
-/**
- * Theme switcher: an icon in the top bar that opens a list of every registered
- * theme. New themes appear here automatically — the list is driven by `THEMES`
- * in `lib/themes/index.ts`, so shipping an event look needs no change here.
- */
+// Theme menu — shows all available themes
 export default function ThemePicker() {
   const { themeId, setThemeId } = useTheme();
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
-  // Close on an outside tap or Escape. Listeners are attached only while the
-  // menu is open, so a closed picker costs nothing.
+  // Close menu on outside click or Escape
   useEffect(() => {
     if (!open) return;
 

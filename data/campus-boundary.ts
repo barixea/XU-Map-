@@ -1,16 +1,5 @@
-/**
- * Perimeter of the Xavier University – Ateneo de Cagayan main campus
- * (Corrales Avenue, Cagayan de Oro).
- *
- * Source: OpenStreetMap way 141597395 (`amenity=university`), © OpenStreetMap
- * contributors, ODbL. The basemap attribution control already credits OSM.
- *
- * Unlike the coordinates in `data/buildings.ts`, these are real — but OSM
- * traces are only as good as their last edit. To re-trace: open the way at
- * https://www.openstreetmap.org/way/141597395, or draw a fresh ring in
- * https://geojson.io and paste the [lng, lat] pairs below. The ring must stay
- * closed (last pair identical to the first) or the fill will not render.
- */
+// Campus boundary from OpenStreetMap way 141597395.
+// Ring must be closed (last point = first point) to render correctly.
 type Ring = [number, number][];
 
 export const CAMPUS_BOUNDARY_RING: Ring = [

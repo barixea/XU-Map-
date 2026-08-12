@@ -23,16 +23,12 @@ const CLOSE_BUTTON = [
 const SECTION_LABEL = 'text-xs font-semibold uppercase tracking-wide text-slate-500';
 
 type Props = {
-  /** Null when nothing is selected, which unmounts the sheet entirely. */
+  // Null when nothing is selected (sheet is unmounted)
   building: BuildingWithPhoto | null;
   onClose: () => void;
 };
 
-/**
- * `aria-modal="false"` is deliberate. This is a dialog, but it does not trap
- * focus or block the map behind it — panning and picking another marker while
- * it is open are both intended.
- */
+// Building detail panel (not a traditional modal — allows interaction with map)
 export default function BuildingSheet({ building, onClose }: Props) {
   if (!building) return null;
 

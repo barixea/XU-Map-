@@ -6,19 +6,7 @@ import { Layer, Source, type LayerProps } from 'react-map-gl/mapbox';
 import { useTheme } from '@/components/theme/ThemeProvider';
 import { CAMPUS_BOUNDARY } from '@/data/campus-boundary';
 
-/**
- * Campus perimeter: a tinted area with a cased outline, so university grounds
- * read as one block against the surrounding city.
- *
- * `slot` places these inside Mapbox Standard's layer stack — 'bottom' keeps the
- * tint under roads and paths, 'middle' keeps the outline under labels and POI
- * icons. Without a slot, Standard stacks custom layers above everything,
- * including the building labels.
- *
- * Colors come from the active theme. react-map-gl diffs `paint` between renders
- * and pushes only the changed properties, so switching theme recolors the
- * existing layers instead of tearing the source down and rebuilding it.
- */
+// Campus boundary with tinted fill and cased outline using Mapbox layers
 export default function CampusBoundary() {
   const { theme } = useTheme();
   const { boundaryFill, boundaryLine, boundaryCasing } = theme.map;
@@ -30,15 +18,13 @@ export default function CampusBoundary() {
       slot: 'bottom',
       paint: {
         'fill-color': boundaryFill,
-        // Fades out as you zoom in — the tint is for orientation at a glance,
-        // and would only muddy the basemap once you are reading building labels.
         'fill-opacity': ['interpolate', ['linear'], ['zoom'], 16, 0.12, 18.5, 0.04],
       },
     }),
     [boundaryFill],
   );
 
-  /** Casing under the outline so it stays legible on dark or busy tiles. */
+  // Outline stroke for legibility on dark or busy tiles
   const outlineCasingLayer = useMemo<LayerProps>(
     () => ({
       id: 'campus-outline-casing',

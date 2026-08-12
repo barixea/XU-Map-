@@ -5,7 +5,7 @@ import type { BuildingWithPhoto } from '@/lib/types';
 
 type Result = {
   building: BuildingWithPhoto;
-  /** Set when the query matched a room rather than the building's own name. */
+  // Set when user typed a room name, not the building name
   matchedRoom: string | null;
 };
 
@@ -79,8 +79,7 @@ export default function BuildingSearch({
           setOpen(true);
         }}
         onFocus={() => setOpen(true)}
-        // Closing the moment focus leaves would beat the click on a result, so
-        // it waits out the gap between mousedown and click.
+        // Wait for click to register instead of closing on blur
         onBlur={() => window.setTimeout(() => setOpen(false), 120)}
         className={SEARCH_INPUT}
       />
@@ -91,8 +90,7 @@ export default function BuildingSearch({
             <li key={building.id} role="option" aria-selected={false}>
               <button
                 type="button"
-                // Keeps focus in the input, so the timer above never starts
-                // and the panel survives long enough to register the click.
+              // Prevent losing focus when clicking
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => {
                   onSelect(building.id);

@@ -54,9 +54,7 @@ export default function WelcomeDialog() {
   const [open, setOpen] = useState(false);
   const closeRef = useRef<HTMLButtonElement>(null);
 
-  // localStorage is read after mount, never during render — reading it in the
-  // render pass would desync the server and client HTML and throw a hydration
-  // error, since the server has no way to know what this browser has seen.
+  // Read localStorage after mount to avoid hydration mismatch
   useEffect(() => {
     if (SHOW_EVERY_VISIT) {
       setOpen(true);
@@ -65,7 +63,7 @@ export default function WelcomeDialog() {
     try {
       if (!window.localStorage.getItem(STORAGE_KEY)) setOpen(true);
     } catch {
-      // Private mode or storage disabled — show it and simply don't persist.
+      // Private mode or storage disabled — show it anyway
       setOpen(true);
     }
   }, []);

@@ -8,21 +8,17 @@ import type { Building } from '@/lib/types';
 const ACCEPT = 'image/jpeg,image/png,image/webp,image/avif';
 const MAX_BYTES = 8 * 1024 * 1024;
 
-/** Field label. Paired with `htmlFor` so tapping the text focuses the input. */
+// Styling for input field labels
 const FIELD_LABEL = 'block text-sm font-medium text-slate-700';
 
-/** Shared by the building select and the caption input. */
+// Common input styling
 const TEXT_INPUT = [
   'mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm',
   'focus:border-slate-900 focus:ring-1 focus:ring-slate-900',
   'disabled:opacity-50',
 ].join(' ');
 
-/**
- * The `file:` variants target the browser's built-in "Choose file" button,
- * which is a shadow-DOM child and can't be reached any other way — without
- * them it stays the default grey and looks unrelated to the rest of the form.
- */
+// Style file input's native browser button
 const FILE_INPUT = [
   'mt-1 w-full rounded-md border border-slate-300 p-2 text-sm',
   'file:mr-3 file:rounded file:border-0 file:bg-slate-900 file:px-3 file:py-1.5',
@@ -50,8 +46,7 @@ export default function PhotoUploadForm({ buildings }: { buildings: Building[] }
     event.preventDefault();
     const file = fileRef.current?.files?.[0];
 
-    // Checked here for a fast, friendly message; the upload route checks the
-    // same things again, because anything client-side can be bypassed.
+    // Client-side check for a friendly message; server validates again anyway
     if (!file) return setStatus({ kind: 'error', message: 'Choose an image first.' });
     if (!ACCEPT.split(',').includes(file.type)) {
       return setStatus({ kind: 'error', message: 'Use a JPEG, PNG, WebP, or AVIF image.' });

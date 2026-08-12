@@ -14,11 +14,7 @@ export async function middleware(request: NextRequest) {
   return NextResponse.redirect(loginUrl);
 }
 
-/**
- * Coarse gate only — every admin route handler re-checks the session itself.
- * `/admin/login` and `/api/admin/login` are deliberately excluded so the
- * unauthenticated flow can reach them.
- */
+// Coarse security gate; admin routes check the session again for safety
 export const config = {
   matcher: ['/admin/photos/:path*', '/api/admin/photos/:path*'],
 };

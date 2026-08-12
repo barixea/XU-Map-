@@ -16,26 +16,18 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
-  // Static per deploy, so it tracks the default theme rather than the
-  // visitor's choice — browsers read this before any script runs.
+  // Uses the default theme; the browser reads this before any script runs
   themeColor: getTheme(null).colors.brand,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    /*
-      `suppressHydrationWarning` covers the `data-theme` attribute that the
-      pre-paint script in <head> sets from localStorage. The server cannot know
-      the visitor's choice, so it renders no attribute and the client finds one
-      — a mismatch React reports as an error. It is scoped to this element's own
-      attributes and does not extend to any descendant, so a genuine mismatch
-      inside the app is still reported.
-    */
+    {/* Suppress hydration warning for data-theme set by pre-paint script */}
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Color variables for every theme; `data-theme` picks which block wins. */}
+        {/* Defines colors for all themes */}
         <style dangerouslySetInnerHTML={{ __html: themeStyleSheet() }} />
-        {/* Applies the stored choice before the first paint — see init-script.ts. */}
+        {/* Loads stored theme before the page paints */}
         <script dangerouslySetInnerHTML={{ __html: themeInitScript() }} />
       </head>
       <body className="bg-slate-50 text-slate-900 antialiased">

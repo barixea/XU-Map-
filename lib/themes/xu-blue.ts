@@ -1,11 +1,6 @@
 import type { Theme } from './types';
 
-/**
- * The default look: Xavier University navy.
- *
- * These are the exact values the map used before theming existed, so a fresh
- * visitor sees no change.
- */
+// Default theme: Xavier University navy — the map's original colors.
 export const xuBlue: Theme = {
   id: 'xu-blue',
   label: 'XU Blue',

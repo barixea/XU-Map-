@@ -6,12 +6,8 @@ declare global {
 
 export const hasDatabase = Boolean(process.env.DATABASE_URL);
 
-/**
- * Lazily constructed so the app still boots before Postgres is provisioned —
- * `getSql()` throws only when something actually tries to query.
- * `prepare: false` is required for transaction-mode poolers
- * (Supabase pgBouncer, Neon pooled endpoint).
- */
+// Lazy DB connection: app boots before Postgres is ready.
+// Only throws when something actually queries.
 export function getSql() {
   if (!process.env.DATABASE_URL) {
     throw new Error('DATABASE_URL is not set');

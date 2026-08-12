@@ -10,8 +10,7 @@ import {
 } from '@/lib/themes';
 
 type ThemeContextValue = {
-  /** The resolved theme object — colors, map paint, accent. */
-  theme: Theme;
+  theme: Theme; // Resolved theme object with colors and map config
   themeId: string;
   setThemeId: (id: string) => void;
 };
@@ -24,18 +23,9 @@ export function useTheme(): ThemeContextValue {
   return ctx;
 }
 
-/**
- * Holds the active theme.
- *
- * Tailwind classes get their colors from CSS custom properties keyed off the
- * `data-theme` attribute, so components using `bg-brand` need nothing from this
- * context. It exists for the values Tailwind cannot reach — the Mapbox boundary
- * paint and lighting presets — and for the picker itself.
- */
+// Provides the active theme to the picker and Mapbox config.
+// Colors flow through CSS custom properties, not this context.
 export default function ThemeProvider({ children }: { children: React.ReactNode }) {
-  // Starts at the default so the first client render matches the server's HTML.
-  // The real value arrives in the effect below; the *visual* theme is already
-  // correct by then, since the pre-paint script set the attribute before paint.
   const [themeId, setThemeIdState] = useState(DEFAULT_THEME_ID);
 
   useEffect(() => {
@@ -46,10 +36,7 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
       const resolved = getTheme(stored).id;
       setThemeIdState(resolved);
 
-      // A retired theme leaves its id behind in every browser that chose it.
-      // `getTheme` already falls back, so nothing looks wrong — but the dead id
-      // would sit there indefinitely and spring back to life if the id were
-      // ever reused. Rewriting it here lets storage heal on the next load.
+      // Clean up dead theme IDs from storage if they were retired
       if (resolved !== stored) window.localStorage.setItem(THEME_STORAGE_KEY, resolved);
     } catch {
       // Private mode or storage disabled — stay on the default.

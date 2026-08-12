@@ -12,26 +12,19 @@ type Props = {
   canZoomOut: boolean;
 };
 
-/** Bottom-right, clear of the Mapbox attribution in the opposite corner. */
+// Bottom-right cluster of map controls (zoom, view mode, locate)
 const DOCK = 'absolute bottom-6 right-3 z-10 flex flex-col items-end gap-2 sm:bottom-8 sm:right-4';
 
-/** The lifted-white-card treatment shared by every cluster in the dock. */
+// Shared floating card style
 const FLOATING = 'rounded-lg shadow-md ring-1 ring-black/10';
 
-/**
- * Zoom in and out read as one control, so they share a card and
- * `overflow-hidden` clips their square corners to the rounded shape.
- */
+// Zoom buttons share one rounded card
 const ZOOM_GROUP = `flex flex-col overflow-hidden ${FLOATING}`;
 
-/** Hairline between the two zoom buttons inside that shared card. */
+// Divider between zoom in/out buttons
 const ZOOM_DIVIDER = 'border-b border-slate-200';
 
-/**
- * `size-10` is 40px — a comfortable thumb target. The disabled rules matter as
- * much as the hover ones: at a zoom limit the button must stop offering hover
- * feedback for a press that will do nothing.
- */
+// 40px thumb-friendly buttons with hover and focus states
 const BUTTON = [
   'grid size-10 place-items-center',
   'bg-white text-slate-700',
@@ -40,12 +33,7 @@ const BUTTON = [
   'disabled:cursor-default disabled:text-slate-300 disabled:hover:bg-white',
 ].join(' ');
 
-/**
- * Every map control in one column at the bottom-right: view mode, zoom, and
- * locate. These replace Mapbox's own NavigationControl/GeolocateControl chrome
- * so the whole cluster shares one style — the real GeolocateControl still runs
- * hidden behind `onLocate` so the user-location dot and tracking are intact.
- */
+// Map controls: view mode, zoom, locate — all in one styled cluster
 export default function ControlDock({
   mode,
   onModeChange,

@@ -1,17 +1,8 @@
 import type { Building } from '@/lib/types';
 
-/**
- * Coordinates surveyed on campus and exported from geojson.io — all 35 points
- * verified to fall inside CAMPUS_BOUNDARY_RING.
- *
- * `description` and `rooms` are intentionally empty: fill them in as the
- * campus directory is confirmed. Anything listed in `rooms` becomes searchable
- * and resolves to this building, so write entries the way a student would type
- * them ("Registrar", "Room 204", "CS Dept").
- *
- * Never change an `id` after a photo has been uploaded for it — the id is the
- * Blob path key, and renaming orphans the photo.
- */
+// Campus coordinates verified inside CAMPUS_BOUNDARY_RING.
+// Description and rooms start empty — fill in as confirmed.
+// Never change an ID after a photo is uploaded (it's the blob storage key).
 export const BUILDINGS: Building[] = [
   {
     id: 'main-gate-corrales',

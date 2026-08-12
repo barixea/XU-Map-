@@ -29,8 +29,7 @@ export async function getBuildingsWithPhotos(): Promise<BuildingWithPhoto[]> {
   try {
     photos = await loadPhotos();
   } catch (error) {
-    // A missing table or unreachable DB shouldn't take the map down —
-    // buildings still render, just without photos.
+    // DB errors don't break the map — buildings show without photos
     console.error('[photos] falling back to no photos:', error);
   }
 

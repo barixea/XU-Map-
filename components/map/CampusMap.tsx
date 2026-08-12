@@ -35,16 +35,13 @@ import type { BuildingWithPhoto } from '@/lib/types';
 type ViewMode = '2d' | '3d';
 
 /**
- * `100dvh` rather than `100vh`: on mobile Safari and Chrome, `vh` measures the
- * viewport as if the address bar were hidden, which pushes the bottom of the
- * map under the browser chrome. `dvh` tracks the space actually on screen.
+ * Use `100dvh` instead of `100vh` — on mobile, `vh` doesn't account for
+ * browser UI, but `dvh` gives us the actual viewport height.
  */
 const SHELL = 'flex h-[100dvh] w-full flex-col overflow-hidden';
 
-/** Shown instead of the map when the Mapbox token is missing. */
 const MISSING_TOKEN_SCREEN = 'grid h-[100dvh] w-full place-items-center bg-slate-100 p-6 text-center';
 
-/** Inline env-var and filename mentions in that message. */
 const CODE = 'rounded bg-slate-200 px-1';
 
 export default function CampusMap({ buildings }: { buildings: BuildingWithPhoto[] }) {
@@ -60,8 +57,6 @@ export default function CampusMap({ buildings }: { buildings: BuildingWithPhoto[
   const selected = buildings.find((b) => b.id === selectedId) ?? null;
   const token = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
-  // Camera + interaction handlers follow the view mode. Doing this
-  // imperatively keeps the transition animated and avoids re-mounting the map.
   useEffect(() => {
     const map = mapRef.current?.getMap();
     if (!map || !styleReady) return;
@@ -86,17 +81,15 @@ export default function CampusMap({ buildings }: { buildings: BuildingWithPhoto[
     }
   }, [viewMode, styleReady]);
 
-  // Basemap look. Kept apart from the camera effect above so that switching
-  // theme only recolors — it must not re-run easeTo and yank the camera back.
+  // Update map colors when theme changes (separate from camera movements)
   useEffect(() => {
     const map = mapRef.current?.getMap();
     if (!map || !styleReady) return;
 
     const is3D = viewMode === '3d';
 
-    // Mapbox Standard style config — 'basemap' is the import id. Each key is
-    // guarded on its own so one unsupported property (a custom style, or a key
-    // Mapbox retires) can't take the rest of the config down with it.
+    // Set basemap properties one by one so a single bad property doesn't break everything
+    // (Mapbox might retire or add properties we need to handle gracefully)
     const setConfig = (key: string, value: unknown) => {
       try {
         map.setConfigProperty('basemap', key, value);
@@ -110,7 +103,7 @@ export default function CampusMap({ buildings }: { buildings: BuildingWithPhoto[
     setConfig('lightPreset', is3D ? theme.map.lightPreset3D : theme.map.lightPreset2D);
   }, [viewMode, styleReady, theme]);
 
-  // Fires on every frame of a zoom, so both setters bail when nothing changed.
+  // Update label visibility and zoom level as the map zooms
   const handleZoom = useCallback((e: ViewStateChangeEvent) => {
     const next = e.viewState.zoom;
     const labelled = next >= LABEL_ZOOM_THRESHOLD;
@@ -137,8 +130,7 @@ export default function CampusMap({ buildings }: { buildings: BuildingWithPhoto[
 
   const zoomIn = useCallback(() => mapRef.current?.getMap().zoomIn({ duration: 300 }), []);
   const zoomOut = useCallback(() => mapRef.current?.getMap().zoomOut({ duration: 300 }), []);
-  // Drives the hidden GeolocateControl below, which owns the user-location
-  // dot, the accuracy circle, and the permission prompt.
+  // Trigger the GeolocateControl to show user location
   const locate = useCallback(() => geolocateRef.current?.trigger(), []);
 
   if (!token) {
@@ -180,7 +172,7 @@ export default function CampusMap({ buildings }: { buildings: BuildingWithPhoto[
           onClick={() => setSelectedId(null)}
           style={{ width: '100%', height: '100%' }}
         >
-          {/* Hidden: ControlDock's locate button triggers it via the ref. */}
+          {/* Hidden: triggered by the locate button in ControlDock */}
           <GeolocateControl
             ref={geolocateRef}
             position="bottom-right"

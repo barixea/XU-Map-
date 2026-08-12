@@ -3,7 +3,7 @@
 import { Marker } from 'react-map-gl/mapbox';
 import type { BuildingCategory, BuildingWithPhoto } from '@/lib/types';
 
-/** One dot color per category, so the map can be read without a legend. */
+// Each category gets its own color for quick visual scanning
 const CATEGORY_COLOR: Record<BuildingCategory, string> = {
   academic: 'bg-blue-600',
   admin: 'bg-slate-700',
@@ -16,10 +16,7 @@ const CATEGORY_COLOR: Record<BuildingCategory, string> = {
 
 const FALLBACK_COLOR = 'bg-slate-600';
 
-/**
- * Label stacked over dot. `group` is what lets the dot below react to hover
- * and focus landing on this button rather than on the dot itself.
- */
+// Label with dot, stacked for readability
 const MARKER = 'group flex cursor-pointer flex-col items-center gap-1 focus:outline-none';
 
 
