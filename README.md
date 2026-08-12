@@ -77,17 +77,6 @@ Or just delete the old photo and re-upload under the new ID.
 - **Photo Gallery** — Admin panel to upload and manage building photos
 - **Secure Auth** — Password-protected admin area
 
-## Architecture Decisions
-
-### Why client-side uploads?
-Serverless platforms like Vercel cap request bodies at 4.5 MB, but phone photos often exceed that. Instead, the browser uploads directly to Blob storage after getting a short-lived, scoped token from the API. This bypasses the size limit entirely. See [app/api/admin/photos/upload/route.ts](app/api/admin/photos/upload/route.ts).
-
-### Why Postgres is optional
-The MVP works with zero database: each photo upload creates a predictable Blob path, and the app resolves photos with cached `list()` calls. Postgres becomes useful later when you add captions, multiple photos per building, upload history, or audit trails. The code already supports this split — Postgres is opt-in and everything works without `DATABASE_URL`.
-
-### Why middleware for auth?
-Middleware is an early security gate: it redirects unauthenticated `/admin/*` requests before page logic runs. But it's not the *only* gate — every admin route handler and page still calls `requireAdmin()` itself. Middleware + route checks = defense in depth.
-
 ## 📄 License
 
 MIT
