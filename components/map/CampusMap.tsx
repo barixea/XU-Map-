@@ -34,6 +34,19 @@ import type { BuildingWithPhoto } from '@/lib/types';
 
 type ViewMode = '2d' | '3d';
 
+/**
+ * `100dvh` rather than `100vh`: on mobile Safari and Chrome, `vh` measures the
+ * viewport as if the address bar were hidden, which pushes the bottom of the
+ * map under the browser chrome. `dvh` tracks the space actually on screen.
+ */
+const SHELL = 'flex h-[100dvh] w-full flex-col overflow-hidden';
+
+/** Shown instead of the map when the Mapbox token is missing. */
+const MISSING_TOKEN_SCREEN = 'grid h-[100dvh] w-full place-items-center bg-slate-100 p-6 text-center';
+
+/** Inline env-var and filename mentions in that message. */
+const CODE = 'rounded bg-slate-200 px-1';
+
 export default function CampusMap({ buildings }: { buildings: BuildingWithPhoto[] }) {
   const mapRef = useRef<MapRef>(null);
   const geolocateRef = useRef<GeolocateControlInstance>(null);
@@ -130,13 +143,12 @@ export default function CampusMap({ buildings }: { buildings: BuildingWithPhoto[
 
   if (!token) {
     return (
-      <div className="grid h-[100dvh] w-full place-items-center bg-slate-100 p-6 text-center">
+      <div className={MISSING_TOKEN_SCREEN}>
         <div className="max-w-sm space-y-2">
           <h1 className="text-base font-semibold text-slate-900">Map unavailable</h1>
           <p className="text-sm text-slate-600">
-            <code className="rounded bg-slate-200 px-1">NEXT_PUBLIC_MAPBOX_TOKEN</code> is not set.
-            Add it to <code className="rounded bg-slate-200 px-1">.env.local</code> and restart the
-            dev server.
+            <code className={CODE}>NEXT_PUBLIC_MAPBOX_TOKEN</code> is not set. Add it to{' '}
+            <code className={CODE}>.env.local</code> and restart the dev server.
           </p>
         </div>
       </div>
@@ -144,7 +156,7 @@ export default function CampusMap({ buildings }: { buildings: BuildingWithPhoto[
   }
 
   return (
-    <div className="flex h-[100dvh] w-full flex-col overflow-hidden">
+    <div className={SHELL}>
       <TopBar search={<BuildingSearch buildings={buildings} onSelect={focusBuilding} />} />
 
       <div className="relative flex-1">

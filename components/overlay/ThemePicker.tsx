@@ -6,6 +6,37 @@ import { useTheme } from '@/components/theme/ThemeProvider';
 import { THEMES } from '@/lib/themes';
 
 /**
+ * Sits on the brand fill, so hover is a white wash at 15% rather than a grey
+ * tint — it has to work over whatever color the active theme paints the bar.
+ */
+const TRIGGER = [
+  'grid size-9 place-items-center rounded-lg text-brand-fg',
+  'transition hover:bg-white/15',
+  'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white',
+].join(' ');
+
+/**
+ * `z-40` clears the top bar and the search results below it. `right-0` hangs
+ * the menu leftward from the trigger so it never runs off the screen edge.
+ */
+const MENU = [
+  'absolute right-0 top-full z-40 mt-2 w-60',
+  'overflow-hidden rounded-xl bg-white py-1 shadow-xl ring-1 ring-black/10',
+].join(' ');
+
+/** Swatch, name and tagline, then the tick — one row, full width. */
+const MENU_ITEM = [
+  'flex w-full items-center gap-3 px-3 py-2.5 text-left',
+  'transition hover:bg-slate-50 focus:bg-slate-50 focus:outline-none',
+].join(' ');
+
+/**
+ * Two-tone chip: the two halves are `w-1/2` children, and `overflow-hidden`
+ * against `rounded-full` is what crops the pair into a circle.
+ */
+const SWATCH = 'flex size-7 shrink-0 overflow-hidden rounded-full ring-1 ring-black/10';
+
+/**
  * Theme switcher: an icon in the top bar that opens a list of every registered
  * theme. New themes appear here automatically — the list is driven by `THEMES`
  * in `lib/themes/index.ts`, so shipping an event look needs no change here.
@@ -15,6 +46,8 @@ export default function ThemePicker() {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
+  // Close on an outside tap or Escape. Listeners are attached only while the
+  // menu is open, so a closed picker costs nothing.
   useEffect(() => {
     if (!open) return;
 
@@ -43,7 +76,7 @@ export default function ThemePicker() {
         aria-haspopup="menu"
         aria-expanded={open}
         aria-label="Change theme"
-        className="grid size-9 place-items-center rounded-lg text-brand-fg transition hover:bg-white/15 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+        className={TRIGGER}
       >
         {/* Painter's palette */}
         <svg
@@ -62,11 +95,7 @@ export default function ThemePicker() {
       </button>
 
       {open && (
-        <div
-          role="menu"
-          aria-label="Theme"
-          className="absolute right-0 top-full z-40 mt-2 w-60 overflow-hidden rounded-xl bg-white py-1 shadow-xl ring-1 ring-black/10"
-        >
+        <div role="menu" aria-label="Theme" className={MENU}>
           {THEMES.map((theme) => {
             const active = theme.id === themeId;
             return (
@@ -79,13 +108,10 @@ export default function ThemePicker() {
                   setThemeId(theme.id);
                   setOpen(false);
                 }}
-                className="flex w-full items-center gap-3 px-3 py-2.5 text-left transition hover:bg-slate-50 focus:bg-slate-50 focus:outline-none"
+                className={MENU_ITEM}
               >
                 {/* Two-tone chip: brand color over the map accent. */}
-                <span
-                  aria-hidden="true"
-                  className="flex size-7 shrink-0 overflow-hidden rounded-full ring-1 ring-black/10"
-                >
+                <span aria-hidden="true" className={SWATCH}>
                   <span className="w-1/2" style={{ backgroundColor: theme.swatch[0] }} />
                   <span className="w-1/2" style={{ backgroundColor: theme.swatch[1] }} />
                 </span>

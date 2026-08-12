@@ -19,6 +19,20 @@ import { useEffect, useRef, useState } from 'react';
 const STORAGE_KEY = 'xu-map:welcome-seen:v1';
 const SHOW_EVERY_VISIT = true;
 
+/** Dimmed full-screen layer. Clicking it anywhere dismisses the dialog. */
+const BACKDROP = 'fixed inset-0 z-50 grid place-items-center bg-black/50 p-4';
+
+/** `w-full` with a `max-w-md` ceiling: full width on a phone, capped on desktop. */
+const CARD = 'w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl';
+
+/** Themed confirm button — `bg-brand` follows whichever theme is active. */
+const DISMISS_BUTTON = [
+  'mt-5 w-full rounded-lg bg-brand px-4 py-2.5',
+  'text-sm font-semibold text-white',
+  'transition hover:bg-brand-dark',
+  'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand',
+].join(' ');
+
 function DialogBody() {
   return (
     <>
@@ -80,26 +94,19 @@ export default function WelcomeDialog() {
   if (!open) return null;
 
   return (
-    <div
-      className="fixed inset-0 z-50 grid place-items-center bg-black/50 p-4"
-      onClick={dismiss}
-      role="presentation"
-    >
+    <div className={BACKDROP} onClick={dismiss} role="presentation">
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="welcome-title"
+        // Without this, a click inside the card would bubble to the backdrop
+        // above and close the dialog you were trying to read.
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl"
+        className={CARD}
       >
         <DialogBody />
 
-        <button
-          ref={closeRef}
-          type="button"
-          onClick={dismiss}
-          className="mt-5 w-full rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
-        >
+        <button ref={closeRef} type="button" onClick={dismiss} className={DISMISS_BUTTON}>
           Get started
         </button>
       </div>

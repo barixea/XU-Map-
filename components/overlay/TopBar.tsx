@@ -6,6 +6,32 @@ import ThemePicker from './ThemePicker';
 import { useTheme } from '@/components/theme/ThemeProvider';
 
 /**
+ * `shrink-0` keeps the bar at its own height inside the page's flex column —
+ * without it the map's `flex-1` would squeeze it. `z-20` puts it above the map
+ * so the search results panel can hang down over the canvas.
+ */
+const BAR = 'relative z-20 flex h-12 shrink-0 items-center gap-3 bg-brand px-3 shadow-sm sm:h-14 sm:px-4';
+
+/** Painted over the brand fill and under the content — see the note below. */
+const ACCENT_LAYER = 'pointer-events-none absolute inset-0 bg-repeat-x';
+
+/**
+ * `relative` lifts the wordmark above the accent layer without a z-index.
+ * Truncates rather than wraps, since the bar has a fixed height.
+ */
+const WORDMARK = 'relative truncate text-[13px] font-semibold tracking-wide text-brand-fg sm:text-base';
+
+/**
+ * On a phone the search sits in the flex row and `ml-auto` pushes it right of
+ * the wordmark. From `sm` it leaves the flow and centres itself on the bar,
+ * which is why the negative translate and the `sm:ml-0` reset appear together.
+ */
+const SEARCH_SLOT = [
+  'relative ml-auto w-full max-w-xs',
+  'sm:absolute sm:left-1/2 sm:ml-0 sm:w-80 sm:-translate-x-1/2 md:w-96',
+].join(' ');
+
+/**
  * The bar across the top of the map: university wordmark on the left, building
  * search centred, theme picker on the right. Sits in normal flow above the map
  * rather than floating over it, so it never covers the northern edge of campus.
@@ -18,7 +44,7 @@ export default function TopBar({ search }: { search?: ReactNode }) {
   const accent = theme.accent;
 
   return (
-    <header className="relative z-20 flex h-12 shrink-0 items-center gap-3 bg-brand px-3 shadow-sm sm:h-14 sm:px-4">
+    <header className={BAR}>
       {/*
         Optional themed decoration — a web pattern, bunting, a crest. Painted
         over the brand fill and under the content, which follows it in DOM
@@ -27,21 +53,17 @@ export default function TopBar({ search }: { search?: ReactNode }) {
       {accent?.image && (
         <div
           aria-hidden="true"
-          className={`pointer-events-none absolute inset-0 bg-repeat-x ${accent.className ?? ''}`}
+          className={`${ACCENT_LAYER} ${accent.className ?? ''}`}
           style={{ backgroundImage: `url(${accent.image})` }}
         />
       )}
 
-      <h1 className="relative truncate text-[13px] font-semibold tracking-wide text-brand-fg sm:text-base">
+      <h1 className={WORDMARK}>
         Xavier University
         <span className="hidden sm:inline"> - Ateneo de Cagayan</span>
       </h1>
 
-      {search ? (
-        <div className="relative ml-auto w-full max-w-xs sm:absolute sm:left-1/2 sm:ml-0 sm:w-80 sm:-translate-x-1/2 md:w-96">
-          {search}
-        </div>
-      ) : null}
+      {search ? <div className={SEARCH_SLOT}>{search}</div> : null}
 
       {/*
         On mobile the search's own `ml-auto` right-aligns the pair, so the

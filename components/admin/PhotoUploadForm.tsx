@@ -8,6 +8,35 @@ import type { Building } from '@/lib/types';
 const ACCEPT = 'image/jpeg,image/png,image/webp,image/avif';
 const MAX_BYTES = 8 * 1024 * 1024;
 
+/** Field label. Paired with `htmlFor` so tapping the text focuses the input. */
+const FIELD_LABEL = 'block text-sm font-medium text-slate-700';
+
+/** Shared by the building select and the caption input. */
+const TEXT_INPUT = [
+  'mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm',
+  'focus:border-slate-900 focus:ring-1 focus:ring-slate-900',
+  'disabled:opacity-50',
+].join(' ');
+
+/**
+ * The `file:` variants target the browser's built-in "Choose file" button,
+ * which is a shadow-DOM child and can't be reached any other way — without
+ * them it stays the default grey and looks unrelated to the rest of the form.
+ */
+const FILE_INPUT = [
+  'mt-1 w-full rounded-md border border-slate-300 p-2 text-sm',
+  'file:mr-3 file:rounded file:border-0 file:bg-slate-900 file:px-3 file:py-1.5',
+  'file:text-white file:transition file:hover:bg-slate-800',
+  'disabled:opacity-50',
+].join(' ');
+
+/** Dims while the upload is in flight, matching the disabled inputs. */
+const SUBMIT_BUTTON = [
+  'rounded-md bg-slate-900 px-4 py-2 text-sm font-semibold text-white',
+  'transition hover:bg-slate-800',
+  'disabled:opacity-50',
+].join(' ');
+
 type Status = { kind: 'idle' | 'uploading' | 'done' | 'error'; message?: string };
 
 export default function PhotoUploadForm({ buildings }: { buildings: Building[] }) {
@@ -21,6 +50,8 @@ export default function PhotoUploadForm({ buildings }: { buildings: Building[] }
     event.preventDefault();
     const file = fileRef.current?.files?.[0];
 
+    // Checked here for a fast, friendly message; the upload route checks the
+    // same things again, because anything client-side can be bypassed.
     if (!file) return setStatus({ kind: 'error', message: 'Choose an image first.' });
     if (!ACCEPT.split(',').includes(file.type)) {
       return setStatus({ kind: 'error', message: 'Use a JPEG, PNG, WebP, or AVIF image.' });
@@ -72,7 +103,7 @@ export default function PhotoUploadForm({ buildings }: { buildings: Building[] }
   return (
     <form onSubmit={handleSubmit} className="max-w-lg space-y-5">
       <div>
-        <label htmlFor="building" className="block text-sm font-medium text-slate-700">
+        <label htmlFor="building" className={FIELD_LABEL}>
           Building
         </label>
         <select
@@ -80,7 +111,7 @@ export default function PhotoUploadForm({ buildings }: { buildings: Building[] }
           value={buildingId}
           onChange={(e) => setBuildingId(e.target.value)}
           disabled={busy}
-          className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-slate-900 focus:ring-1 focus:ring-slate-900 disabled:opacity-50"
+          className={TEXT_INPUT}
         >
           {buildings.map((b) => (
             <option key={b.id} value={b.id}>
@@ -91,7 +122,7 @@ export default function PhotoUploadForm({ buildings }: { buildings: Building[] }
       </div>
 
       <div>
-        <label htmlFor="photo" className="block text-sm font-medium text-slate-700">
+        <label htmlFor="photo" className={FIELD_LABEL}>
           Landmark photo
         </label>
         <input
@@ -102,7 +133,7 @@ export default function PhotoUploadForm({ buildings }: { buildings: Building[] }
           required
           disabled={busy}
           aria-describedby="photo-hint"
-          className="mt-1 w-full rounded-md border border-slate-300 p-2 text-sm file:mr-3 file:rounded file:border-0 file:bg-slate-900 file:px-3 file:py-1.5 file:text-white file:transition file:hover:bg-slate-800 disabled:opacity-50"
+          className={FILE_INPUT}
         />
         <p id="photo-hint" className="mt-1 text-xs text-slate-500">
           Landscape shot of the main entrance works best. Max 8 MB. Replaces the current photo.
@@ -110,7 +141,7 @@ export default function PhotoUploadForm({ buildings }: { buildings: Building[] }
       </div>
 
       <div>
-        <label htmlFor="caption" className="block text-sm font-medium text-slate-700">
+        <label htmlFor="caption" className={FIELD_LABEL}>
           Caption <span className="font-normal text-slate-500">(used as alt text)</span>
         </label>
         <input
@@ -120,18 +151,15 @@ export default function PhotoUploadForm({ buildings }: { buildings: Building[] }
           disabled={busy}
           maxLength={200}
           placeholder="Main entrance facing Corrales Avenue"
-          className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-slate-900 focus:ring-1 focus:ring-slate-900 disabled:opacity-50"
+          className={TEXT_INPUT}
         />
       </div>
 
-      <button
-        type="submit"
-        disabled={busy}
-        className="rounded-md bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:opacity-50"
-      >
+      <button type="submit" disabled={busy} className={SUBMIT_BUTTON}>
         {busy ? 'Uploading…' : 'Publish photo'}
       </button>
 
+      {/* aria-live so the outcome reaches a screen reader without a focus move. */}
       {status.message && (
         <p
           role="status"

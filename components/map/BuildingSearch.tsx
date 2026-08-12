@@ -10,6 +10,35 @@ type Result = {
 };
 
 /**
+ * Sits in the top bar over the brand fill, so its focus rings are white rather
+ * than the usual dark ones — a slate one would disappear against the header.
+ */
+const SEARCH_INPUT = [
+  'w-full rounded-lg bg-white px-3 py-2',
+  'text-sm text-slate-800 placeholder:text-slate-400',
+  'shadow-sm ring-1 ring-black/10',
+  'focus:outline-none focus:ring-2 focus:ring-white/70',
+].join(' ');
+
+/**
+ * Hangs below the input. `z-30` clears the map and its controls; `top-full`
+ * pins it to the bottom edge of the input regardless of the input's height.
+ */
+const RESULTS_PANEL = [
+  'absolute inset-x-0 top-full z-30 mt-1',
+  'overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black/5',
+].join(' ');
+
+/** `block w-full` so the whole row is the target, not just the text in it. */
+const RESULT_ROW = [
+  'block w-full px-3 py-2 text-left text-sm',
+  'hover:bg-slate-50 focus:bg-slate-50 focus:outline-none',
+].join(' ');
+
+/** Primary line of a result — the thing you were most likely searching for. */
+const RESULT_TITLE = 'font-medium text-slate-800';
+
+/**
  * Non-map path to a building. Matters more than the map for someone who
  * already knows the name, and it's the accessible fallback on slow
  * connections or with a screen reader.
@@ -67,36 +96,36 @@ export default function BuildingSearch({
           setOpen(true);
         }}
         onFocus={() => setOpen(true)}
+        // Closing the moment focus leaves would beat the click on a result, so
+        // it waits out the gap between mousedown and click.
         onBlur={() => window.setTimeout(() => setOpen(false), 120)}
-        className="w-full rounded-lg bg-white px-3 py-2 text-sm text-slate-800 shadow-sm ring-1 ring-black/10 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-white/70"
+        className={SEARCH_INPUT}
       />
 
       {open && results.length > 0 && (
-        <ul
-          id="building-search-results"
-          role="listbox"
-          className="absolute inset-x-0 top-full z-30 mt-1 overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black/5"
-        >
+        <ul id="building-search-results" role="listbox" className={RESULTS_PANEL}>
           {results.map(({ building, matchedRoom }) => (
             <li key={building.id} role="option" aria-selected={false}>
               <button
                 type="button"
+                // Keeps focus in the input, so the timer above never starts
+                // and the panel survives long enough to register the click.
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => {
                   onSelect(building.id);
                   setQuery('');
                   setOpen(false);
                 }}
-                className="block w-full px-3 py-2 text-left text-sm hover:bg-slate-50 focus:bg-slate-50 focus:outline-none"
+                className={RESULT_ROW}
               >
                 {matchedRoom ? (
                   <>
-                    <span className="font-medium text-slate-800">{matchedRoom}</span>
+                    <span className={RESULT_TITLE}>{matchedRoom}</span>
                     <span className="block text-xs text-slate-500">in {building.name}</span>
                   </>
                 ) : (
                   <>
-                    <span className="font-medium text-slate-800">{building.name}</span>
+                    <span className={RESULT_TITLE}>{building.name}</span>
                     {building.aliases?.length ? (
                       <span className="ml-2 text-xs text-slate-500">
                         {building.aliases.join(' · ')}
