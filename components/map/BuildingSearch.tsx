@@ -9,10 +9,6 @@ type Result = {
   matchedRoom: string | null;
 };
 
-/**
- * Sits in the top bar over the brand fill, so its focus rings are white rather
- * than the usual dark ones — a slate one would disappear against the header.
- */
 const SEARCH_INPUT = [
   'w-full rounded-lg bg-white px-3 py-2',
   'text-sm text-slate-800 placeholder:text-slate-400',
@@ -20,32 +16,20 @@ const SEARCH_INPUT = [
   'focus:outline-none focus:ring-2 focus:ring-white/70',
 ].join(' ');
 
-/**
- * Hangs below the input. `z-30` clears the map and its controls; `top-full`
- * pins it to the bottom edge of the input regardless of the input's height.
- */
 const RESULTS_PANEL = [
   'absolute inset-x-0 top-full z-30 mt-1',
   'overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black/5',
 ].join(' ');
 
-/** `block w-full` so the whole row is the target, not just the text in it. */
+
 const RESULT_ROW = [
   'block w-full px-3 py-2 text-left text-sm',
   'hover:bg-slate-50 focus:bg-slate-50 focus:outline-none',
 ].join(' ');
 
-/** Primary line of a result — the thing you were most likely searching for. */
 const RESULT_TITLE = 'font-medium text-slate-800';
 
-/**
- * Non-map path to a building. Matters more than the map for someone who
- * already knows the name, and it's the accessible fallback on slow
- * connections or with a screen reader.
- *
- * Rooms are searchable too: typing a room or office resolves to the building
- * that contains it, and the matched room is shown so the hit is explicable.
- */
+
 export default function BuildingSearch({
   buildings,
   onSelect,
@@ -65,8 +49,7 @@ export default function BuildingSearch({
       const nameHit = [building.name, ...(building.aliases ?? [])].some((s) =>
         s.toLowerCase().includes(q),
       );
-      // Prefer the room whose name starts with the query — closer to what
-      // someone typing "204" or "regis" is looking for.
+      
       const roomHits = building.rooms.filter((r) => r.toLowerCase().includes(q));
       const matchedRoom =
         roomHits.find((r) => r.toLowerCase().startsWith(q)) ?? roomHits[0] ?? null;

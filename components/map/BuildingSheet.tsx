@@ -3,11 +3,6 @@
 import Image from 'next/image';
 import type { BuildingWithPhoto } from '@/lib/types';
 
-/**
- * On a phone this rises from the bottom edge and is capped at 62dvh, so you can
- * still see the marker you tapped. From `md` the same panel is re-anchored as a
- * full-height rail down the right side.
- */
 const SHEET = [
   'absolute inset-x-0 bottom-0 z-10 max-h-[62dvh] overflow-y-auto',
   'rounded-t-2xl bg-white shadow-2xl',
@@ -15,13 +10,8 @@ const SHEET = [
   'md:rounded-none md:rounded-l-2xl',
 ].join(' ');
 
-/**
- * `relative` is required — next/image with `fill` positions itself against the
- * nearest positioned ancestor. The grey fill is what you see while it loads.
- */
 const PHOTO_FRAME = 'relative aspect-[16/9] w-full bg-slate-100';
 
-/** Tinted and blurred rather than solid, so the photo still reads underneath. */
 const CLOSE_BUTTON = [
   'absolute right-3 top-3',
   'grid size-9 place-items-center rounded-full',
@@ -30,7 +20,6 @@ const CLOSE_BUTTON = [
   'focus-visible:ring-2 focus-visible:ring-white',
 ].join(' ');
 
-/** Small caps eyebrow above a group, quieter than the building name. */
 const SECTION_LABEL = 'text-xs font-semibold uppercase tracking-wide text-slate-500';
 
 type Props = {
@@ -40,9 +29,6 @@ type Props = {
 };
 
 /**
- * Detail panel for the selected building: photo, description, and the list of
- * rooms and offices inside it.
- *
  * `aria-modal="false"` is deliberate. This is a dialog, but it does not trap
  * focus or block the map behind it — panning and picking another marker while
  * it is open are both intended.
